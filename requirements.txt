@@ -39,3 +39,4 @@ tensorflow==1.4.0
 tensorflow-tensorboard==0.4.0
 Werkzeug==0.15.4
 wincertstore==0.2
+gunicorn==19.9.0
