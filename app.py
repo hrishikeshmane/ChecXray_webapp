@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, flash
 from werkzeug.utils import secure_filename
 from gevent.pywsgi import WSGIServer
 
@@ -42,8 +42,10 @@ def get_output_layer(model, layer_name):
 
 def create_cam(output_dir, image_source, model, class_names):
     #img_ori = cv2.imread(filename=os.path.join(image_source_dir, file_name))
+    res_exception = True
     img_ori = cv2.imread(image_source)
-    file_name=image_source[-16:]
+    #file_name=image_source[-16:]
+    _,file_name=os.path.split(image_source)
     output_path = os.path.join(output_dir, f"{file_name}")
 
     img_transformed = load_image(image_source)
@@ -67,8 +69,16 @@ def create_cam(output_dir, image_source, model, class_names):
     cam = cv2.resize(cam, img_ori.shape[:2])
     heatmap = cv2.applyColorMap(np.uint8(255 * cam), cv2.COLORMAP_JET)
     heatmap[np.where(cam < 0.2)] = 0
-    img = heatmap * 0.5 + img_ori
-    cv2.imwrite(output_path, img)
+    #img = heatmap * 0.5 + img_ori
+    try:
+    	img = np.dot(heatmap,0.5) + img_ori
+    	cv2.imwrite(output_path, img)
+    except:
+    	print("Image should be a square image. Example: 1024 X 1024")
+    	res_exception= False
+    	return res_exception
+
+
 
     return output_path
 
@@ -130,12 +140,15 @@ def upload():
         ##result="benign"
         #return result
         #return preds
-        return render_template("report.html", cam_image=preds[0][-16:], result=preds[1] )
+        if preds[0]:
+        	return render_template("report.html", cam_image=os.path.split(preds[0])[1], result=preds[1] )
+        else:
+        	return render_template("index.html")
     return None
 
 
 
 port = int(os.environ.get('PORT', 5000))
-app.run(host="0.0.0.0", port=port, debug=False)
+app.run(host="0.0.0.0", port=port, debug=True)
 #if __name__ == '__main__':
 #    app.run()
