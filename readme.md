@@ -6,7 +6,7 @@ Create a new environment
 
 1. Clone this repository
 ```
-git clone https://github.com/Parag0506/Chest-xray-diagnosis.git
+git clone https://github.com/hrishikeshmane/ChecXray_webapp.git
 ```
 
 3. Install requirements.txt
@@ -32,10 +32,11 @@ InceptionV3<br>
 InceptionResNetV2<br>
 NASNetMobile<br>
 NASNetLarge<br>
+Densenet 169 <br>
 
 ## USE
 Visit : 
 https://checxray.herokuapp.com/
 
-Upload any xray image you need to scan. [for now it supports only 1024*1024 image sizes]
+Upload any xray image you need to scan. [for now it supports only 1:1 image sizes, eg 1024*1024]
 There is a folder in the repos containing sample x-ray images of the required size.  
